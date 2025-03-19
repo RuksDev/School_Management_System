@@ -95,7 +95,7 @@ const FinanceChart = () => {
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid stroke="rgba(0, 0, 0, 0.1)" strokeDasharray="3 3" />
           <XAxis
             dataKey="name"
             axisLine={false}
@@ -113,9 +113,15 @@ const FinanceChart = () => {
             type="monotone"
             dataKey="Income"
             stroke="#FFF066"
+            strokeWidth={3}
             activeDot={{ r: 8 }}
           />
-          <Line type="monotone" dataKey="Expense" stroke="#8BCDF6" />
+          <Line
+            type="monotone"
+            dataKey="Expense"
+            stroke="#8BCDF6"
+            strokeWidth={3}
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>
