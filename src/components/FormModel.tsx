@@ -27,9 +27,6 @@ const StudentForm = dynamic(() => import("./forms/StudentForm"), {
   ),
 });
 
-
-
-
 const forms: {
   [key: string]: (type: "create" | "update", data?: any) => JSX.Element;
 } = {
@@ -58,7 +55,7 @@ const FormModel = ({
     | "announcement";
   type: "create" | "update" | "delete";
   data?: any;
-  id?: number;
+  id?: number | string;
 }) => {
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
   const bgColor =
@@ -91,7 +88,7 @@ const FormModel = ({
   return (
     <>
       <button
-        className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
+        className={`${size} flex items-center justify-center rounded-full ${bgColor} hover:scale-105 transition-transform duration-200 ease-in-out hover:shadow-md focus:outline-none`}
         onClick={() => setOpen(true)}
       >
         <Image src={`/${type}.png`} alt="" width={16} height={16} />

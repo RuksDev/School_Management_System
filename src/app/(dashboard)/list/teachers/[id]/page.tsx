@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const SingleTeacherPage = () => {
   return (
-    <div className="flex-1 p-4 flex flex-col xl:flex-row">
+    <div className="flex-1 p-4 flex flex-col xl:flex-row gap-4">
       {/* LEFT */}
       <div className="w-ful xl:w-2/3">
         {/* TOP */}
@@ -24,28 +24,27 @@ const SingleTeacherPage = () => {
               />
             </div>
             <div className="w-2/3 flex flex-col justify-between gap-4">
-            <div className="flex items-center gap-4">
-
-              <h1 className="text-xl font-semibold">John Doe</h1>
-              <FormModel
-                table="teacher"
-                type="update"
-                data={{
-                  id: 1,
-                  username: "john1212quntom",
-                  email: "john1212@gmail.com",
-                  password: "password",
-                  firstName: "John",
-                  lastName: "Smith",
-                  phone: "+1 232 548 74",
-                  address: "123 Main St, Anytown, USA",
-                  bloodType: "A+",
-                  birthday: "1991-05-22",
-                  sex: "male",
-                  Img: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1200",
-                }}
+              <div className="flex items-center gap-4">
+                <h1 className="text-xl font-semibold">John Doe</h1>
+                <FormModel
+                  table="teacher"
+                  type="update"
+                  data={{
+                    id: 1,
+                    username: "john1212quntom",
+                    email: "john1212@gmail.com",
+                    password: "password",
+                    firstName: "John",
+                    lastName: "Smith",
+                    phone: "+1 232 548 74",
+                    address: "123 Main St, Anytown, USA",
+                    bloodType: "A+",
+                    birthday: "1991-05-22",
+                    sex: "male",
+                    Img: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1200",
+                  }}
                 />
-                </div>
+              </div>
               <p className="text-sm text-gray-500">
                 John Doe is a dedicated Math and Geometry teacher for classes
                 1B, 2A, and 3C. He creates a positive and engaging learning
@@ -140,19 +139,28 @@ const SingleTeacherPage = () => {
         <div className="bg-white p-4 rounded-md">
           <h1 className="text-xl font-semibold">Shortcuts</h1>
           <div className="mt-4 flex gap-4 flex-wrap text-xs to-gray-500">
-            <Link className="p-3 rounded-md bg-ruksSkyBlueLight" href="/">
+            <Link
+              className="p-3 rounded-md bg-ruksSkyBlueLight"
+              href={`/list/classes?supervisorId=${"teacher2"}`}
+            >
               Teacher&apos;s Classes
             </Link>
-            <Link className="p-3 rounded-md bg-ruksPurpleLight" href="/">
+            <Link
+              className="p-3 rounded-md bg-ruksPurpleLight"
+              href={`/list/students?teacherId=${"teacher2"}`}
+            >
               Teacher&apos;s Students
             </Link>
-            <Link className="p-3 rounded-md bg-ruksYellowLight" href="/">
+            <Link
+              className="p-3 rounded-md bg-ruksYellowLight"
+              href={`/list/lessons?teacherId =${"teacher2"}`}
+            >
               Teacher&apos;s Lessons
             </Link>
-            <Link className="p-3 rounded-md bg-pink-100" href="/">
+            <Link className="p-3 rounded-md bg-pink-100" href={`/list/exams?teacherId =${"teacher2"}`}>
               Teacher&apos;s Exams
             </Link>
-            <Link className="p-3 rounded-md bg-ruksSkyBlueLight" href="/">
+            <Link className="p-3 rounded-md bg-ruksSkyBlueLight" href={`/list/assignments?teacherId =${"teacher2"}`}>
               Teacher&apos;s Assignments
             </Link>
           </div>

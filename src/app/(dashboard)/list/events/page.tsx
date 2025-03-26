@@ -65,7 +65,7 @@ const EventListPage = () => {
             </button>
           </Link>
           {role === "admin" && (
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ruksPurple ">
+            <button className="w-7 h-7 flex items-center justify-center rounded-full hover:scale-105 transition-transform duration-200 ease-in-out hover:shadow-md bg-ruksPurple ">
               <Image src="/delete.png" alt="" width={16} height={16} />
             </button>
           )}
