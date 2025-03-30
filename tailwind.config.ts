@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        "open-sans": ["Open Sans", "sans-serif"],
+      },
       animation: {
         pulse: "pulse 1.5s infinite", // Custom pulse animation
         shake: "shake 0.5s ease-in-out",
@@ -15,6 +18,8 @@ const config: Config = {
         loading_713: "loading_713 3.5s ease infinite", // Added custom animation
         loading2_713: "loading2_713 3.5s ease infinite", // Added custom animation
         blink: "blink 1.5s infinite",
+        fadeIn: "fadeIn 1s ease-in-out",
+        errorFade: "errorFade 0.5s ease-in-out",
       },
       keyframes: {
         pulse: {
@@ -54,6 +59,14 @@ const config: Config = {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0" },
         },
+        fadeIn: {
+          "0%": { opacity: "0", transform: "translateY(-20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        errorFade: {
+          "0%": { opacity: "0", transform: "translateY(-10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -78,4 +91,3 @@ const config: Config = {
 };
 
 export default config;
-

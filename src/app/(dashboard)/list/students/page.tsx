@@ -2,15 +2,14 @@ import FormModel from "@/components/FormModel";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, studentsData } from "@/lib/data";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
+import { role } from "@/lib/utils";
 import type { Class, Prisma, Student } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { string } from "zod";
 
-type StudentList = Student & {class : Class };
+type StudentList = Student & { class: Class };
 
 const columns = [
   {
@@ -37,10 +36,14 @@ const columns = [
     accessor: "address",
     className: "hidden lg:table-cell",
   },
-  {
-    header: "Actions",
-    accessor: "actions",
-  },
+  ...(role === "admin"
+    ? [
+        {
+          header: "Actions",
+          accessor: "actions",
+        },
+      ]
+    : []),
 ];
 
 const renderRow = (item: StudentList) => (
@@ -50,7 +53,7 @@ const renderRow = (item: StudentList) => (
   >
     <td className="flex items-center gap-4 p-4">
       <Image
-        src={item.img || "/noAvatar.png"} 
+        src={item.img || "/noAvatar.png"}
         alt=""
         width={40}
         height={40}
@@ -73,9 +76,6 @@ const renderRow = (item: StudentList) => (
           </button>
         </Link>
         {role === "admin" && (
-          // <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ruksPurple ">
-          //   <Image src="/delete.png" alt="" width={16} height={16} />
-          // </button>
           <FormModel table="student" type="delete" id={item.id} />
         )}
       </div>
@@ -102,18 +102,18 @@ const StudentListPage = async ({
         switch (key) {
           case "teacherId":
             query.class = {
-              lessons:{
+              lessons: {
                 some: {
                   teacherId: value,
                 },
-              }
+              },
             };
             break;
           case "search":
             query.name = { contains: value, mode: "insensitive" };
             break;
-            default:
-              break;
+          default:
+            break;
         }
       }
     }
@@ -144,12 +144,7 @@ const StudentListPage = async ({
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-ruksYellow hover:scale-105 transition-transform duration-200 ease-in-out hover:shadow-md">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {role === "admin" && (
-              // <button className="w-8 h-8 flex items-center justify-center rounded-full bg-ruksYellow hover:scale-105 transition-transform duration-200 ease-in-out hover:shadow-md">
-              //   <Image src="/create.png" alt="" width={14} height={14} />
-              // </button>
-              <FormModel table="student" type="create" />
-            )}
+            {role === "admin" && <FormModel table="student" type="create" />}
           </div>
         </div>
       </div>

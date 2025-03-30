@@ -8,8 +8,8 @@
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "CommonJS", // Set to CommonJS for better compatibility
-    "moduleResolution": "node",
+    "module": "esnext", // Set to CommonJS for better compatibility
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",

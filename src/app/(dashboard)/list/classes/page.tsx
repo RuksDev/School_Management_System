@@ -2,9 +2,9 @@ import FormModel from "@/components/FormModel";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, classesData } from "@/lib/data";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
+import { role } from "@/lib/utils";
 import type { Class, Prisma, Teacher } from "@prisma/client";
 import Image from "next/image";
 
@@ -31,10 +31,14 @@ const columns = [
     accessor: "supervisor",
     className: "hidden md:table-cell",
   },
-  {
-    header: "Actions",
-    accessor: "actions",
-  },
+  ...(role === "admin"
+    ? [
+        {
+          header: "Actions",
+          accessor: "actions",
+        },
+      ]
+    : []),
 ];
 
 const renderRow = (item: ClassList) => (
@@ -50,15 +54,7 @@ const renderRow = (item: ClassList) => (
     </td>
     <td>
       <div className="flex items-center gap-2">
-        {/* <Link href={`/list/classes/${item.id}`}>
-          <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ruksSkyBlue ">
-            <Image src="/edit.png" alt="" width={16} height={16} />
-          </button>
-        </Link> */}
         {role === "admin" && (
-          // <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ruksPurple ">
-          //   <Image src="/delete.png" alt="" width={16} height={16} />
-          // </button>
           <>
             <FormModel table="class" type="update" data={item} />
             <FormModel table="class" type="delete" id={item.id} />
@@ -91,6 +87,8 @@ const ClassListPage = async ({
           case "search":
             query.name = { contains: value, mode: "insensitive" };
             break;
+          default:
+            break;
         }
       }
     }
@@ -122,9 +120,6 @@ const ClassListPage = async ({
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
             {role === "admin" && (
-              // <button className="w-8 h-8 flex items-center justify-center rounded-full bg-ruksYellow hover:scale-105 transition-transform duration-200 ease-in-out hover:shadow-md">
-              //   <Image src="/plus.png" alt="" width={14} height={14} />
-              // </button>
               <FormModel table="class" type="create" />
             )}
           </div>

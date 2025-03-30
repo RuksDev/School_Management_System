@@ -2,24 +2,28 @@ import FormModel from "@/components/FormModel";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, resultsData } from "@/lib/data";
+import prisma from "@/lib/prisma";
+import { ITEM_PER_PAGE } from "@/lib/settings";
+import { currentUserId, role } from "@/lib/utils";
+import type { Prisma } from "@prisma/client";
 import Image from "next/image";
 
-type Result = {
+type ResultList = {
   id: number;
-  subject: string;
-  student: string;
-  class: string;
-  teacher: string;
-  date: string;
-  type: string;
+  title: string;
+  studentName: string;
+  studentSurname: string;
+  teacherName: string;
+  teacherSurname: string;
   score: number;
+  className: string;
+  startTime: Date;
 };
 
 const columns = [
   {
-    header: "Subject Name",
-    accessor: "subject",
+    header: "Title",
+    accessor: "title",
   },
   {
     header: "Student Name",
@@ -47,51 +51,154 @@ const columns = [
     accessor: "date",
     className: "hidden md:table-cell",
   },
-  {
-    header: "Type",
-    accessor: "type",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Actions",
-    accessor: "actions",
-  },
+  ...(role === "admin" || role === "teacher"
+    ? [
+        {
+          header: "Actions",
+          accessor: "actions",
+        },
+      ]
+    : []),
 ];
+const renderRow = (item: ResultList) => (
+  <tr
+    key={item.id}
+    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-ruksPurpleLight "
+  >
+    <td className="flex items-center gap-4 p-4">{item.title}</td>
+    <td className="hidden md:table-cell">
+      {item.studentName + " " + item.studentSurname}
+    </td>
+    <td className="hidden md:table-cell">{item.score}</td>
+    <td className="hidden md:table-cell">{item.className}</td>
+    <td className="hidden md:table-cell">
+      {item.teacherName + " " + item.teacherSurname}
+    </td>
+    <td className="hidden md:table-cell">
+      {new Intl.DateTimeFormat("en-US").format(item.startTime)}
+    </td>
+    <td>
+      <div className="flex items-center gap-2">
+        {(role === "admin" || role === "teacher") && (
+          <>
+            <FormModel table="result" type="delete" id={item.id} />
+            <FormModel table="result" type="update" data={item} />
+          </>
+        )}
+      </div>
+    </td>
+  </tr>
+);
+const ResultListPage = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) => {
+  const { page, ...queryParams } = searchParams;
 
-const ExamListPage = () => {
-  const renderRow = (item: Result) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-ruksPurpleLight "
-    >
-      <td className="flex items-center gap-4 p-4">{item.subject}</td>
-      <td className="hidden md:table-cell">{item.student}</td>
-      <td className="hidden md:table-cell">{item.score}</td>
-      <td className="hidden md:table-cell">{item.class}</td>
-      <td className="hidden md:table-cell">{item.teacher}</td>
-      <td className="hidden md:table-cell">{item.date}</td>
-      <td className="hidden md:table-cell">{item.type}</td>
-      <td>
-        <div className="flex items-center gap-2">
-          {/* <Link href={`/list/classes/${item.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ruksSkyBlue ">
-              <Image src="/edit.png" alt="" width={16} height={16} />
-            </button>
-          </Link> */}
+  const p = page ? parseInt(page) : 1;
 
-          {role === "admin" && (
-            // <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ruksPurple ">
-            //   <Image src="/delete.png" alt="" width={16} height={16} />
-            // </button>
-            <>
-              <FormModel table="result" type="delete" id={item.id} />
-              <FormModel table="result" type="update" data={item} />
-            </>
-          )}
-        </div>
-      </td>
-    </tr>
-  );
+  // URL PARAMS CONDITION
+
+  const query: Prisma.ResultWhereInput = {};
+
+  if (queryParams) {
+    for (const [key, value] of Object.entries(queryParams)) {
+      if (value !== undefined) {
+        switch (key) {
+          case "studentId":
+            query.studentId = value;
+            break;
+          case "search":
+            query.OR = [
+              { exam: { title: { contains: value, mode: "insensitive" } } },
+              { student: { name: { contains: value, mode: "insensitive" } } },
+            ];
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  }
+
+  //ROLE CONDITIONS
+
+  switch (role) {
+    case "admin":
+      break;
+    case "teacher":
+      query.OR = [
+        { exam: { lesson: { teacherId: currentUserId! } } },
+        { assignment: { lesson: { teacherId: currentUserId! } } },
+      ];
+      break;
+
+    case "student":
+      query.studentId = currentUserId!;
+      break;
+
+    case "parent":
+      query.student = {
+        parentId: currentUserId!,
+      };
+      break;
+
+    default:
+      break;
+  }
+
+  const [dataRes, count] = await prisma.$transaction([
+    prisma.result.findMany({
+      where: query,
+      include: {
+        student: { select: { name: true, surname: true } },
+        exam: {
+          include: {
+            lesson: {
+              select: {
+                class: { select: { name: true } },
+                teacher: { select: { name: true, surname: true } },
+              },
+            },
+          },
+        },
+        assignment: {
+          include: {
+            lesson: {
+              select: {
+                class: { select: { name: true } },
+                teacher: { select: { name: true, surname: true } },
+              },
+            },
+          },
+        },
+      },
+      take: ITEM_PER_PAGE,
+      skip: (p - 1) * ITEM_PER_PAGE,
+    }),
+    prisma.result.count({ where: query }),
+  ]);
+
+  const data = dataRes.map((item) => {
+    const assessment = item.exam || item.assignment;
+
+    if (!assessment) return null;
+
+    const isExam = "startTime" in assessment;
+
+    return {
+      id: item.id,
+      title: assessment.title,
+      studentName: item.student.name,
+      studentSurname: item.student.surname,
+      teacherName: assessment.lesson.teacher.name,
+      teacherSurname: assessment.lesson.teacher.surname,
+      score: item.score,
+      className: assessment.lesson.class.name,
+      startTime: isExam ? assessment.startTime : assessment.startDate,
+    };
+  });
 
   return (
     <div className="bg-white rounded-md p-4 m-4 mt-0 flex-1">
@@ -107,21 +214,18 @@ const ExamListPage = () => {
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-ruksYellow hover:scale-105 transition-transform duration-200 ease-in-out hover:shadow-md">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {role === "admin" && (
-              // <button className="w-8 h-8 flex items-center justify-center rounded-full bg-ruksYellow hover:scale-105 transition-transform duration-200 ease-in-out hover:shadow-md">
-              //   <Image src="/plus.png" alt="" width={14} height={14} />
-              // </button>
+            {(role === "admin" || role === "teacher") && (
               <FormModel table="result" type="create" />
             )}
           </div>
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={resultsData} />
+      <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
-      <Pagination />
+      <Pagination page={p} count={count} />
     </div>
   );
 };
 
-export default ExamListPage;
+export default ResultListPage;
