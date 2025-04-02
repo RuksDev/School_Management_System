@@ -416,8 +416,8 @@ async function main() {
   for (let i = 1; i <= 5; i++) {
     await prisma.announcement.create({
       data: {
-        title: `Announcement${i}`,
-        description: `Description for Announcement${i}`,
+        title: `Announcement ${i}`,
+        description: `Description for Announcement ${i}`,
         date: new Date(),
         classId: (i % 5) + 1,
       },

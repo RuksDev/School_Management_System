@@ -9,7 +9,6 @@ import type { Announcement, Class, Prisma } from "@prisma/client";
 import Image from "next/image";
 
 
-
 type AnnouncementList = Announcement & { class: Class };
 
 const columns = [

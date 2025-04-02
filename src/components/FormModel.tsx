@@ -3,8 +3,7 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useState } from "react";
-// import TeacherForm from "./forms/TeacherForm";
-// import StudentForm from "./forms/StudentForm";
+
 
 // This is the lazy loading...
 const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
@@ -26,10 +25,20 @@ const StudentForm = dynamic(() => import("./forms/StudentForm"), {
     </div>
   ),
 });
+const SubjectForm = dynamic(() => import("./forms/SubjectForm"), {
+  loading: () => (
+    <div className="w-full h-full bg-white p-4 rounded-lg flex items-center justify-center">
+      <h1 className="text-xl font-semibold text-[#1393E2] animate-pulse">
+        Loading...
+      </h1>
+    </div>
+  ),
+});
 
 const forms: {
   [key: string]: (type: "create" | "update", data?: any) => JSX.Element;
 } = {
+  subject: (type, data) => <SubjectForm type={type} data={data} />,
   teacher: (type, data) => <TeacherForm type={type} data={data} />,
   student: (type, data) => <StudentForm type={type} data={data} />,
 };
