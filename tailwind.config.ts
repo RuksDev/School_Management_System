@@ -20,6 +20,7 @@ const config: Config = {
         blink: "blink 1.5s infinite",
         fadeIn: "fadeIn 1s ease-in-out",
         errorFade: "errorFade 0.5s ease-in-out",
+        fadeInShake: "fadeInShake 0.5s ease-out",
       },
       keyframes: {
         pulse: {
@@ -66,6 +67,20 @@ const config: Config = {
         errorFade: {
           "0%": { opacity: "0", transform: "translateY(-10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        fadeInShake: {
+          "0%": {
+            opacity: "0",
+            transform: "translateX(-10px)",
+          },
+          "50%": {
+            opacity: "1",
+            transform: "translateX(5px)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateX(0)",
+          },
         },
       },
       backgroundImage: {
