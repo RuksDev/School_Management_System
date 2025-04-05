@@ -143,7 +143,7 @@ const StudentForm = ({
         <div className="flex flex-col gap-2 w-full md:w-1/4 mt-4 mb-6">
           <label className="text-sm text-gray-400 mt-4">Sex:</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full transition-all duration-300 ease-in-out hover:ring-blue-400 "
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full transition-all duration-300 ease-in-out hover:ring-blue-400 focus:ring-[#1393E2] focus:inner-glow focus:outline-none"
             {...register("sex")}
             defaultValue={data?.sex}
           >

@@ -143,7 +143,7 @@ const TeacherForm = ({
         <div className="flex flex-col gap-2 w-full md:w-1/4 mt-4 mb-6">
           <label className="text-sm text-gray-400 mt-4">Sex:</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full transition-all duration-300 ease-in-out hover:ring-blue-400 "
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full transition-all duration-300 ease-in-out hover:ring-blue-400 focus:ring-[#1393E2] focus:inner-glow focus:outline-none"
             {...register("sex")}
             defaultValue={data?.sex}
           >
@@ -181,14 +181,14 @@ const TeacherForm = ({
 
       {/* Additional input fields for personal info can go here */}
       <button
-  type="submit"
-  className="relative rounded px-5 py-2.5 overflow-hidden group bg-[#1393E2] hover:bg-[#1177B8] text-white transition-all ease-out duration-300 mt-6"
->
-  <span className="absolute right-0 w-full h-32 -mt-12 transition-all duration-1000 transform translate-x-full bg-white opacity-10 rotate-12 group-hover:-translate-x-full ease"></span>
-  <span className="relative">
-    {type === "create" ? "Create" : "Update"}
-  </span>
-</button>
+        type="submit"
+        className="relative rounded px-5 py-2.5 overflow-hidden group bg-[#1393E2] hover:bg-[#1177B8] text-white transition-all ease-out duration-300 mt-6"
+      >
+        <span className="absolute right-0 w-full h-32 -mt-12 transition-all duration-1000 transform translate-x-full bg-white opacity-10 rotate-12 group-hover:-translate-x-full ease"></span>
+        <span className="relative">
+          {type === "create" ? "Create" : "Update"}
+        </span>
+      </button>
     </form>
   );
 };

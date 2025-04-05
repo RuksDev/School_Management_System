@@ -1,3 +1,4 @@
+import FormContainer from "@/components/FormContainer";
 import FormModel from "@/components/FormModel";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
@@ -9,6 +10,8 @@ import type { Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
 
 type SubjectList = Subject & { teachers: Teacher[] };
+
+
 
 const columns = [
   {
@@ -40,8 +43,8 @@ const renderRow = (item: SubjectList) => (
       <div className="flex items-center gap-2">
         {role === "admin" && (
           <>
-            <FormModel table="subject" type="update" data={item} />
-            <FormModel table="subject" type="delete" id={item.id} />
+            <FormContainer table="subject" type="update" data={item} />
+            <FormContainer table="subject" type="delete" id={item.id} />
           </>
         )}
       </div>
@@ -100,7 +103,7 @@ const SubjectListPage = async ({
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-ruksYellow hover:scale-105 transition-transform duration-200 ease-in-out hover:shadow-md">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {role === "admin" && <FormModel table="subject" type="create" />}
+            {role === "admin" && <FormContainer table="subject" type="create" />}
           </div>
         </div>
       </div>
